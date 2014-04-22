@@ -103,22 +103,4 @@ func main() {
 	} else {
 		fmt.Printf("No path found between %d and %d\n", from, to)
 	}
-	/*
-		found = false
-		visited = make([]bool, g.NumVertices())
-		stack = make([]int, g.NumEdges())
-		count = 0
-		graph.BFSShortest(g, from, visited, func(w int) {
-			if !found {
-				stack[count] = w
-				count++
-			}
-			if w == to {
-				stack = stack[0:count]
-				found = true
-			}
-		})
-		if found {
-			fmt.Print(stack)
-		}*/
 }
