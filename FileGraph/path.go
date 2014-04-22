@@ -42,6 +42,13 @@ func nextNumber(reader *bufio.Reader, delim byte) (int, error) {
 
 }
 
+func reverse(slice []int) {
+	l := len(slice)
+	for i := 0; i < l/2; i++ {
+		slice[i], slice[l-i-1] = slice[l-i-1], slice[i]
+	}
+}
+
 func main() {
 	file, err := os.Open(filename)
 	if err != nil {
@@ -87,19 +94,28 @@ func main() {
 	found := false
 	visited := make([]bool, g.NumVertices())
 	stack := make([]int, g.NumEdges())
-	count := 0
+	previous := -1
 	graph.BFS(g, from, visited, func(w int) {
 		if !found {
-			stack[count] = w
-			count++
+			stack[w] = previous
+			previous = w
 		}
 		if w == to {
-			stack = stack[0:count]
 			found = true
 		}
 	})
 	if found {
-		fmt.Printf("Path from %d to %d: %v\n", from, to, stack)
+		index := to
+		path := make([]int, g.NumEdges())
+		count := 0
+		for index != -1 {
+			path[count] = index
+			index = stack[index]
+			count++
+		}
+		path = path[0:count]
+		reverse(path)
+		fmt.Printf("Path from %d to %d: %v\n", from, to, path)
 	} else {
 		fmt.Printf("No path found between %d and %d\n", from, to)
 	}
