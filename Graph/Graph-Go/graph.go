@@ -35,7 +35,7 @@ type Iterator interface {
 // The visited array keeps track of visited vertices.
 // When the algorithm arrives at a node w for which visited[w] is false,
 // action(w) is called and visited[w] is set to true.
-func BFS(g Iterator, v int, visited []bool, action func(w int)) {
+func BFS(g Iterator, v int, visited []bool, action func(from, w int)) {
 	traverse(g, v, visited, action, bfs)
 }
 
@@ -44,7 +44,7 @@ func BFS(g Iterator, v int, visited []bool, action func(w int)) {
 // The visited array keeps track of visited vertices.
 // When the algorithm arrives at a node w for which visited[w] is false,
 // action(w) is called and visited[w] is set to true.
-func DFS(g Iterator, v int, visited []bool, action func(w int)) {
+func DFS(g Iterator, v int, visited []bool, action func(from, w int)) {
 	traverse(g, v, visited, action, dfs)
 }
 
@@ -53,13 +53,13 @@ const (
 	dfs
 )
 
-func traverse(g Iterator, v int, visited []bool, action func(w int), order int) {
+func traverse(g Iterator, v int, visited []bool, action func(from, w int), order int) {
 	var queue []int
 
 	if visited[v] {
 		return
 	}
-	visit(v, &queue, visited, action)
+	visit(-1, v, &queue, visited, action)
 	for len(queue) > 0 {
 		switch order {
 		case bfs: // pop from fifo queue
@@ -70,14 +70,14 @@ func traverse(g Iterator, v int, visited []bool, action func(w int), order int) 
 		}
 		g.DoNeighbors(v, func(w int, _ interface{}) {
 			if !visited[w] {
-				visit(w, &queue, visited, action)
+				visit(v, w, &queue, visited, action)
 			}
 		})
 	}
 }
 
-func visit(v int, queue *[]int, visited []bool, action func(w int)) {
+func visit(from, v int, queue *[]int, visited []bool, action func(from, w int)) {
 	visited[v] = true
-	action(v)
+	action(from, v)
 	*queue = append(*queue, v)
 }
